@@ -29,7 +29,18 @@ namespace Game1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        // Test comment
+        // Create sprite
+        Texture2D logo;
+        Texture2D logoTrans;
+
+        // Track positions, initialize to 0,0
+        Vector2 pos1 = Vector2.Zero;
+        Vector2 pos2 = Vector2.Zero;
+
+        // Determine how far to move each object between frames
+        float speed1 = 2f;
+        float speed2 = 3f;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -61,7 +72,8 @@ namespace Game1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            logo = Content.Load<Texture2D>("img/logo");
+            logoTrans = Content.Load<Texture2D>("img/logo_trans");
         }
 
         /// <summary>
@@ -88,7 +100,13 @@ namespace Game1
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            pos1.X += speed1;
+            if (pos1.X > Window.ClientBounds.Width - logo.Width || pos1.X < 0)
+                speed1 *= -1;
+
+            pos2.Y += speed2;
+            if (pos2.Y > Window.ClientBounds.Height - logoTrans.Height || pos2.Y < 0)
+                speed2 *= -1;
 
             base.Update(gameTime);
         }
@@ -102,7 +120,30 @@ namespace Game1
         {
             GraphicsDevice.Clear(Color.AntiqueWhite);
 
-            // TODO: Add your drawing code here
+            // Let the graphics device know that we are about to send sprite data
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+            spriteBatch.Draw(
+                logo, 
+                pos1,
+                null,
+                Color.White,
+                0,
+                Vector2.Zero,
+                1.5f,
+                SpriteEffects.FlipHorizontally,
+                1);
+
+            spriteBatch.Draw(
+                logoTrans,
+                pos2,
+                null,
+                Color.White,
+                0,
+                Vector2.Zero,
+                1.5f,
+                SpriteEffects.FlipHorizontally,
+                0);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
